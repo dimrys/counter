@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {Display} from "./Display";
+import { IncButton } from './IncButton';
+import { ResButton } from './ResButton';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    let [value, setValue] = useState<number>(0)
+
+    const incValue = () => {
+        setValue(value + 1)
+    }
+
+    const resetValue = () => {
+        setValue(0)
+    }
+
+    return (
+        <div className="App">
+            <Display value={value}/>
+            <div className= "wrapper">
+                <IncButton value = {value}
+                           incValue = {incValue}/>
+                <ResButton value = {value}
+                           resetValue = {resetValue}/>
+            </div>
+        </div>
+    );
 }
 
 export default App;
