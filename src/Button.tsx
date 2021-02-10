@@ -3,7 +3,6 @@ import React from "react";
 type PropsButtonType = {
     name: string
     settingValue: () => void
-    value: number
     disabled: boolean
 }
 
