@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import {Display} from "./Display";
-import { IncButton } from './IncButton';
-import { ResButton } from './ResButton';
+import {Button} from "./Button";
 
 
 function App() {
@@ -16,17 +15,29 @@ function App() {
         setValue(0)
     }
 
+    const maxValueDisabled = 10
+    const minValueDisabled = 0
+
+
     return (
         <div className="App">
-            <Display value={value}/>
+            <Display value={value} blockValue={maxValueDisabled}/>
             <div className= "wrapper">
-                <IncButton value = {value}
-                           incValue = {incValue}/>
-                <ResButton value = {value}
-                           resetValue = {resetValue}/>
+
+                <Button name={"inc"}
+                        disabled={value === maxValueDisabled ? true: false}
+                        settingValue={incValue}
+                        value={value}/>
+                <Button name={"res"}
+                        disabled={value === minValueDisabled ? true: false}
+                        settingValue={resetValue}
+                        value={value}/>
+
             </div>
         </div>
     );
 }
 
 export default App;
+
+

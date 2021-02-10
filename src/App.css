@@ -13,8 +13,10 @@
   border-radius: 5px;
   margin: auto;
   text-align: center;
+}
 
-
+.wrapper {
+  display: flex;
 }
 
 .normal {
