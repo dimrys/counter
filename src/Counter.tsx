@@ -8,12 +8,13 @@ type CounterPropsType = {
     minValueDisabled: number
     incValue: () => void
     resetValue: () => void
+    handlerSettings?: () => void
 
 }
 
 export function Counter(props: CounterPropsType) {
     return (
-        <div>
+        <div className="App">
             <Display value={props.value} blockValue={props.maxValueDisabled}/>
             <div className="wrapper">
                 <Button name={"inc"}
@@ -24,6 +25,7 @@ export function Counter(props: CounterPropsType) {
                         disabled={props.value === props.minValueDisabled ? true : false}
                         settingValue={props.resetValue}
                 />
+
             </div>
         </div>
     )
