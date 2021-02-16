@@ -5,48 +5,70 @@ import {Button} from "./Button";
 
 
 function App() {
-    let [value, setValue] = useState<number>(0)
 
-    let [minValue, setMinValue] = useState<number>(0)
-    let [maxValue, setMaxValue] = useState<number>(0)
+
+    const [startValue, setStartValue] = useState(0)
+    const [maxValue, setMaxValue] = useState(5)
+    const [value, setValue] = useState(startValue)
+    const [editMode, setEditMode] = useState(false)
+    const [error, setError] = useState(false)
 
     const incValue = () => {
         setValue(value + 1)
     }
     const resetValue = () => {
-        setValue(minValue)
+        setValue(startValue)
     }
 
-    const handlerMin = (e: ChangeEvent<HTMLInputElement>) => {
-        setMinValue(e.currentTarget.valueAsNumber)
+    const handlerMin = (startValue: number) => {
+        if (startValue < 0 || startValue >= maxValue) {
+            setError(true)
+            setStartValue(startValue)
+        } else {
+            setStartValue(startValue)
+            setEditMode(true)
+            setError(false)
+        }
+
 
     }
-    const handlerMax = (e: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(e.currentTarget.valueAsNumber)
+    const handlerMax = (maxValue: number) => {
+        if (maxValue <= startValue) {
+            setError(true)
+            setMaxValue(maxValue)
+        } else {
+            setMaxValue(maxValue)
+            setEditMode(true)
+            setError(false)
+        }
 
     }
 
     const handlerSettings = () => {
-        setValue(minValue)
+        setValue(startValue)
+        setEditMode(false)
     }
 
 
     return (
         <div>
-            <Counter value={value}
+            <Counter error={error}
+                     editMode={editMode}
+                     value={value}
                      maxValueDisabled={maxValue}
-                     minValueDisabled={minValue}
+                     minValueDisabled={startValue}
                      incValue={incValue}
                      resetValue={resetValue}
                 // handlerSettings = {handlerSettings}
             />
 
-            <SettingCounter
-                maxValue={maxValue}
-                minValue={minValue}
-                handlerMax={handlerMax}
-                handlerMin={handlerMin}
-                handlerSettings={handlerSettings}
+            <SettingCounter error={error}
+                            editMode={editMode}
+                            maxValue={maxValue}
+                            minValue={startValue}
+                            handlerMax={handlerMax}
+                            handlerMin={handlerMin}
+                            handlerSettings={handlerSettings}
 
             />
 
@@ -57,26 +79,39 @@ function App() {
 export default App;
 
 type SettingCounterPropsType = {
-    handlerMax: (e: ChangeEvent<HTMLInputElement>) => void
-    handlerMin: (e: ChangeEvent<HTMLInputElement>) => void
+    error: boolean
+    editMode: boolean
+    handlerMax: (maxValue: number) => void
+    handlerMin: (startValue: number) => void
     maxValue: number
     minValue: number
     handlerSettings: () => void
 }
 
 function SettingCounter(props: SettingCounterPropsType) {
+
+    const onChangeHandlerMax = (e: ChangeEvent<HTMLInputElement>) => {
+        props.handlerMax(e.currentTarget.valueAsNumber)
+    }
+
+    const onChangeHandlerStart = (e: ChangeEvent<HTMLInputElement>) => {
+        props.handlerMin(e.currentTarget.valueAsNumber)
+    }
+    const disabledButtonSet = props.error ? true : props.editMode ? !props.editMode : true
+
+
     return (
         <div className="App">
             <div>
                 <span>Max</span>
-                <input type="number" onChange={props.handlerMax} value={props.maxValue}/>
+                <input type="number" onChange={onChangeHandlerMax} value={props.maxValue}/>
             </div>
             <div>
                 <span>Min</span>
-                <input type="number" onChange={props.handlerMin} value={props.minValue}/>
+                <input type="number" onChange={onChangeHandlerStart} value={props.minValue}/>
             </div>
             <Button name={"set"}
-                    disabled={false}
+                    disabled={disabledButtonSet}
                     settingValue={props.handlerSettings}
             />
         </div>
