@@ -38,3 +38,7 @@
   color: white;
   background-color: red;
 }
+
+.input_error {
+  background-color: red;
+}

@@ -10,6 +10,27 @@ function App() {
     const [startValue, setStartValue] = useState(0)
     const [maxValue, setMaxValue] = useState(5)
     const [value, setValue] = useState(startValue)
+    useEffect(() => {
+        let startValueAsString = localStorage.getItem('startValue')
+        if(startValueAsString) {
+            setStartValue(JSON.parse(startValueAsString))
+            setValue(JSON.parse(startValueAsString))
+        }
+    }, [])
+
+    useEffect(() => {
+        let maxValueAsString = localStorage.getItem('maxValue')
+        if(maxValueAsString) {
+            setMaxValue(JSON.parse(maxValueAsString))
+        }
+    }, [])
+
+
+
+
+
+
+
     const [editMode, setEditMode] = useState(false)
     const [error, setError] = useState(false)
 
@@ -47,6 +68,9 @@ function App() {
     const handlerSettings = () => {
         setValue(startValue)
         setEditMode(false)
+        localStorage.setItem('startValue', JSON.stringify(startValue))
+        localStorage.setItem('maxValue', JSON.stringify(maxValue))
+
     }
 
 
@@ -59,7 +83,7 @@ function App() {
                      minValueDisabled={startValue}
                      incValue={incValue}
                      resetValue={resetValue}
-                // handlerSettings = {handlerSettings}
+
             />
 
             <SettingCounter error={error}
@@ -89,26 +113,56 @@ type SettingCounterPropsType = {
 }
 
 function SettingCounter(props: SettingCounterPropsType) {
+    const [minError, setMinError] = useState(false)
+    const [maxError, setMaxError] = useState(false)
 
     const onChangeHandlerMax = (e: ChangeEvent<HTMLInputElement>) => {
-        props.handlerMax(e.currentTarget.valueAsNumber)
+        const maxValue = e.currentTarget.valueAsNumber
+        props.handlerMax(maxValue)
+        if(maxValue <= props.minValue) {
+            setMinError(true)
+            setMaxError(true)
+        } else {
+            setMinError(false)
+            setMaxError(false)
+        }
+
     }
 
     const onChangeHandlerStart = (e: ChangeEvent<HTMLInputElement>) => {
-        props.handlerMin(e.currentTarget.valueAsNumber)
+        const startValue = e.currentTarget.valueAsNumber
+        props.handlerMin(startValue)
+        if(startValue < 0) {
+            setMinError(true)
+        } else if (startValue >= props.maxValue) {
+            setMinError(true)
+            setMaxError(true)
+        } else {
+            setMinError(false)
+            setMaxError(false)
+        }
+
     }
     const disabledButtonSet = props.error ? true : props.editMode ? !props.editMode : true
 
+    const classNameForMin = minError ? "input_error" : ""
+    const classNameForMax = maxError ? "input_error" : ""
 
     return (
         <div className="App">
             <div>
                 <span>Max</span>
-                <input type="number" onChange={onChangeHandlerMax} value={props.maxValue}/>
+                <input type="number"
+                       className={classNameForMax}
+                       onChange={onChangeHandlerMax}
+                       value={props.maxValue}/>
             </div>
             <div>
                 <span>Min</span>
-                <input type="number" onChange={onChangeHandlerStart} value={props.minValue}/>
+                <input type="number"
+                       className={classNameForMin}
+                       onChange={onChangeHandlerStart}
+                       value={props.minValue}/>
             </div>
             <Button name={"set"}
                     disabled={disabledButtonSet}
@@ -120,37 +174,5 @@ function SettingCounter(props: SettingCounterPropsType) {
 }
 
 
-// function TestLocal() {
-//     const [value1, setValue1] = useState(0)
-//
-//     useEffect(() => {
-//         let valueAsString = localStorage.getItem('counterValue')
-//         if(valueAsString) {
-//             setValue1(JSON.parse(valueAsString))
-//         }
-//     }, [])
-//
-//
-//
-//     useEffect(() => {
-//         localStorage.setItem('counterValue', JSON.stringify(value1))
-//     },[value1])
-//
-//
-//
-//
-//     const incHandler = () => {
-//         setValue1(value1 + 1 )
-//     }
-//
-//     return(
-//         <div>
-//             <div>{value1}</div>
-//             <button onClick={incHandler}>inc</button>
-//
-//         </div>
-//     )
-//
-// }
 
 
